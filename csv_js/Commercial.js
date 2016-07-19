@@ -1,6 +1,6 @@
 var fs=require('fs');
 
-var data = fs.readFileSync('Production-Department_of_Agriculture_and_Cooperation_1.csv', {encoding:'utf8'}).toString();
+var data = fs.readFileSync('../Production-Department_of_Agriculture_and_Cooperation_1.csv', {encoding:'utf8'}).toString();
 
 var s=data.split("\r\n");
 

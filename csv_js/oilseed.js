@@ -1,6 +1,6 @@
 var fs=require('fs');
 
-var data = fs.readFileSync('Production-Department_of_Agriculture_and_Cooperation_1.csv', {encoding:'utf8'}).toString();
+var data = fs.readFileSync('../Production-Department_of_Agriculture_and_Cooperation_1.csv', {encoding:'utf8'}).toString();
 
 var s=data.split("\r\n");
 
@@ -26,21 +26,21 @@ var s=data.split("\r\n");
     j++;
   }
 
-var food=[];
+var oil=[];
 j=0;
 for(var i=0;i<particulars.length;i++)
 {
   var line=particulars[i].split(" ");
 
-  for(var k=line.length-1;k>=0;k--)
+  for(var k=0;k<line.length;k++)
   {
-    if(line[k]=="Area" || line[k]=="Volume" || line[k]=="Yield" || line[k]=="Other" || line[k]=="Oilseeds" || line[k]=="Coarse" || line[k]=="Pulses" || line[k]=="Total")
+    if(line[k]=="Foodgrains")
     {
       break;
     }
-    if(line[k]=="Foodgrains")
+    if(line[k]=="Oilseeds")
     {
-      food[j]=i;
+      oil[j]=i;
       j++;
       break;
     }
@@ -48,34 +48,31 @@ for(var i=0;i<particulars.length;i++)
 
 }
 
-// console.log(food);
-var foodgrain=[];
+// console.log(oil);
+var oilseed=[];
 var year2013=[];
-for(var i=0;i<food.length-8;i++)
+for(var i=0;i<oil.length-2;i++)
 {
   if(i==0)
   {
-    foodgrain[i]=particulars[0];
+    oilseed[i]=particulars[0];
     year2013[i]=y2013[0];
     continue;
   }
-  foodgrain[i]=particulars[food[i]];
-  year2013[i]=y2013[food[i]];
+  oilseed[i]=particulars[oil[i]];
+  year2013[i]=y2013[oil[i]];
 }
-
-// console.log(foodgrain);
-// console.log(year2013);
 
 var type=[];
 var t="";
-for(var i=1;i<foodgrain.length;i++)
+for(var i=1;i<oilseed.length;i++)
 {
   t="";
-  var line=foodgrain[i].split(" ");
+  var line=oilseed[i].split(" ");
 
   for(var k=0;k<line.length;k++)
   {
-    if(line[k]=="Agricultural" || line[k]=="Production" || line[k]=="Foodgrains")
+    if(line[k]=="Agricultural" || line[k]=="Production" || line[k]=="Oilseeds")
     {
       continue;
     }
@@ -84,8 +81,9 @@ for(var i=1;i<foodgrain.length;i++)
    t=t.trim();
   type[i]=t;
 }
-type[0]="Foodgrain type";
+
 // console.log(type);
+type[0]="Oilseed type";
 
 for(var i=1;i<year2013.length;i++)
 {
@@ -113,22 +111,21 @@ var i, k, pos, temp;
             type[pos]=temp;
         }
 
-// console.log(year2013);
-// console.log(type);
+
 var str="";
 for(i=1;i<type.length;i++)
 {
   if(i==1)
   {
-    str=str+'[\n{\n"Foodgrain crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n},\n\r';
+    str=str+'[\n{\n"Oilseed crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n},\n\r';
     continue;
   }
   if(i==type.length-1)
   {
-    str=str+'{\n"Foodgrain crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n}\n]';
+    str=str+'{\n"Oilseed crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n}\n]';
     continue;
   }
-  str=str+'\n{\n"Foodgrain crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n},\n\r';
+  str=str+'\n{\n"Oilseed crop type" : "'+type[i]+'",\n"Production" : "'+year2013[i]+'"\n},\n\r';
 }
 
-fs.writeFileSync('foodgrain.json',str);
+fs.writeFileSync('oilseed.json',str);
